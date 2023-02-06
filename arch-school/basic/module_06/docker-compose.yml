@@ -1,0 +1,81 @@
+version: '3.3'
+
+services:
+  db-node-ex01:
+    build:
+      context: mariadb
+      dockerfile: Dockerfile
+    container_name: db-node-ex01
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: archdb
+      MYSQL_USER: arch_user
+      MYSQL_PASSWORD: arch_password
+      MYSQL_ROOT_PASSWORD: '1'
+    command: >
+      --sql-mode='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'
+      --general-log=ON
+      --log-queries-not-using-indexes=ON
+    networks:
+      - arch-network
+    ports:
+      - 3360:3306
+    volumes:
+      - db-node-ex01-data:/var/lib/mysql
+
+  service_author:
+    build:
+      context: service_author
+      dockerfile: Dockerfile
+    container_name: service_author
+    networks:
+      - arch-network
+    depends_on:
+      - db-node-ex01
+      - cache
+    ports:
+      - 8081:8080
+
+  service_author_cache:
+    build:
+      context: service_author_cache
+      dockerfile: Dockerfile
+    container_name: service_author_cache
+    networks:
+      - arch-network
+    depends_on:
+      - db-node-ex01
+      - cache
+    ports:
+      - 8082:8080
+
+  service_presentation:
+    build:
+      context: service_presentation
+      dockerfile: Dockerfile
+    container_name: service_presentation
+    networks:
+      - arch-network
+    depends_on:
+      - db-node-ex01
+      - cache
+    ports:
+      - 8083:8080
+
+  cache:
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning 
+    networks:
+      - arch-network
+    volumes: 
+      - cache:/data
+volumes:
+  db-node-ex01-data:
+  cache:
+networks:
+  arch-network:
+    driver: "bridge"
+    external: false

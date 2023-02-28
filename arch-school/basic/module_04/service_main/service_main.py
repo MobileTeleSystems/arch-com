@@ -50,7 +50,7 @@ app = FastAPI()
 @app.get("/presentationsAndAuthor/{title}")
 async def read_presentation(title: str):
     #get presentation
-    responsePresentation = requests.get("http://app2:8082/presentations/"+title)
+    responsePresentation = requests.get("http://service_presentation:8082/presentations/"+title)
     print(responsePresentation)
     if responsePresentation is None : raise HTTPException(status_code=404, detail="No presentations for this title")
     
@@ -63,7 +63,7 @@ async def read_presentation(title: str):
 
 
     #get Author by id 
-    responseAuthor = requests.get("http://app1:8081/authors/"+str(presentation.author_id))
+    responseAuthor = requests.get("http://service_author:8081/authors/"+str(presentation.author_id))
     print(responseAuthor)
     if responseAuthor is None : raise HTTPException(status_code=404, detail="No authors for this id")
 

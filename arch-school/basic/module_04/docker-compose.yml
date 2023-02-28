@@ -1,7 +1,7 @@
 version: '3.3'
 
 services:
-  app1:
+  service_author:
     build: 
       context: service_author
       dockerfile: Dockerfile
@@ -11,7 +11,7 @@ services:
     ports:
       - 8081:8081
 
-  app2:
+  service_presentation:
     build:
       context: service_presentation
       dockerfile: Dockerfile
@@ -21,14 +21,14 @@ services:
     ports:
       - 8082:8082
 
-  app3:
+  service_main:
     build:
       context: service_main
       dockerfile: Dockerfile
     container_name: service_main
     depends_on:
-      - app1
-      - app2
+      - service_presentation
+      - service_author
     networks:
       - arch-network
     ports:

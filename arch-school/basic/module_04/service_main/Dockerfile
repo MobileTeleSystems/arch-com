@@ -11,5 +11,5 @@ RUN pip3 install -r requirements.txt
 
 COPY service_main.py /
 
-ENTRYPOINT ["python3", "-m", "uvicorn" , "service_main:app","--host","0.0.0.0","--reload", "--port", "8083"] 
+ENTRYPOINT ["python3", "-m", "uvicorn" , "app3.service_main:app","--host","0.0.0.0","--reload", "--port", "8083"] 
 

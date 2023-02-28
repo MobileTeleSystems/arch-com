@@ -1,6 +1,8 @@
 from fastapi import Depends, FastAPI, HTTPException, Request
 import requests
 
+requests.adapters.DEFAULT_RETRIES = 5
+
 class Author(object):
     '''Class Author'''
     id : int
@@ -48,25 +50,31 @@ app = FastAPI()
 @app.get("/presentationsAndAuthor/{title}")
 async def read_presentation(title: str):
     #get presentation
-    responsePresentation = requests.get("/presentations/"+"First Presentation")
+    responsePresentation = requests.get("http://app2:8082/presentations/"+title)
     print(responsePresentation)
-    if responsePresentation is None : raise HTTPException(status_code=404, detail="No presentations for this id")
+    if responsePresentation is None : raise HTTPException(status_code=404, detail="No presentations for this title")
     
     #responsePresentation -> presentation
     presentation = Presentation(**responsePresentation.json()[0])
     print(presentation)
+    responsePresentation.close
     
+
+
+
     #get Author by id 
-    responseAuthor = requests.get("/authors/"+str(presentation.author_id))
+    responseAuthor = requests.get("http://app1:8081/authors/"+str(presentation.author_id))
     print(responseAuthor)
-    if responseAuthor is None : raise HTTPException(status_code=404, detail="No presentations for this id")
+    if responseAuthor is None : raise HTTPException(status_code=404, detail="No authors for this id")
 
     #responseAuthor -> author
     author = Author(**responseAuthor.json()[0])
 
     #new integation class
     presentationWithAuthor = Presentation_With_Author(presentation.title, author, presentation.date)
-
+    
+    responseAuthor.close
+    
     return presentationWithAuthor
 pass
 

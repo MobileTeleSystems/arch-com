@@ -4,27 +4,10 @@ info:
   title: 'Conference server API'
   description: API to retrive information about main entities of Conference server
 servers:
-  - url: http://localhost:8082
+  - url: http://localhost:8083
 
 paths:
-  /presentations:
-    get:
-      summary: Read all presentations      
-      responses:
-        200:
-          description: All presentations
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Presentation'        
-        500:
-          description: Unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'      
-
-  /presentations/{title}:
+  /presentationsAndAuthor/{title}:
     get:
       summary: Read presentations by title
       parameters:
@@ -36,7 +19,7 @@ paths:
           $ref: '#/components/schemas/title'
       responses:
         200:
-          description: Presentation by title
+          description: Presentation with Author by title
           content:
             application/json:
               schema:
@@ -61,9 +44,35 @@ components:
 
     Presentation:
       type: object
-      properties:        
+      properties:       
         author_id:
           $ref: '#/components/schemas/Author_id'
+        date:
+          type: string
+        title:
+          type: string
+    
+    Author:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/Author_id'
+        birth_date:
+          type: string
+        title:
+          type: string
+        email:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+    
+    Presentation_With_Author:
+      type: object
+      properties:       
+        author:
+          $ref: '#/components/schemas/Author'
         date:
           type: string
         title:

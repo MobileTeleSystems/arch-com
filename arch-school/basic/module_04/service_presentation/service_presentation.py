@@ -3,8 +3,7 @@ import json
 from datetime import date
 
 class Presentation(object):
-    '''Class Presentation'''
-    id = int
+    '''Class Presentation'''    
     title = str
     author_id = int
     date = date
@@ -38,14 +37,6 @@ app = FastAPI()
 @app.get("/presentations/{title}")
 async def read_presentation(title: str):
     presentation = [val for (it,val) in enumerate(presentations) if val.title == title]
-    if presentation is None : raise HTTPException(status_code=404, detail="No presentations for this id")
-    return presentation
-
-#get by id
-@app.get("/presentations/{presentation_id}")
-async def read_presentation(presentation_id: int):
-    presentation = [val for (it,val) in enumerate(presentations) if val.id == presentation_id]
-    print(str(presentation))
     if presentation is None : raise HTTPException(status_code=404, detail="No presentations for this id")
     return presentation
 

@@ -28,3 +28,4 @@
 ### Настройка инструментов
 
 - Для того, чтобы диаграммы PlantUML отображались в режиме Markdown: Preview, необходимо в настройках плагина [vscode-plantuml](https://github.com/qjebbs/vscode-plantuml) установить параметр `plantuml.server` в `https://www.plantuml.com/plantuml`.
+- Для поддержки фрагментов кода PlantUML C4 в редакторе, добавьте [файл с ними](https://github.com/plantuml-stdlib/C4-PlantUML/blob/master/.vscode/C4.code-snippets) в папку `<VS Code User Settings Folder>/snippets`.

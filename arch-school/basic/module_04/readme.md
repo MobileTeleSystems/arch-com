@@ -9,10 +9,14 @@
 * Устанавливаем питон pip - pip install "uvicorn[standard]"
 * Устанавливаем фреймворк для запуска сервисов fastapi - pip install fastapi
 * Устанавливаем дополнения - pip install requests
-* Обновляем питон - pip install requests
+* Устанавливаем дополнения - pip install uvicorn
+* Устанавливаем дополнения - pip install pyyaml
+* Обновляем питон - python.exe -m pip install --upgrade pip
 
 
 Забираете с GIT module_04 
+
+* Запуск серввисов локально - uvicorn service_presentation:app --reload 
 
 В директории module_04 запускаем - docker-compose build && docker-compose up -d
 

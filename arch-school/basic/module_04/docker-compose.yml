@@ -11,17 +11,6 @@ services:
     ports:
       - 8081:8081
 
-
-  service_main:
-    build:
-      context: service_main
-      dockerfile: Dockerfile
-    container_name: service_main
-    networks:
-      - arch-network
-    ports:
-      - 8083:8083
-
   service_presentation:
     build:
       context: service_presentation
@@ -31,6 +20,21 @@ services:
       - arch-network
     ports:
       - 8082:8082
+
+  service_main:
+    build:
+      context: service_main
+      dockerfile: Dockerfile
+    container_name: service_main
+    depends_on:
+      - service_presentation
+      - service_author
+    networks:
+      - arch-network
+    ports:
+      - 8083:8083
+
+
       
 networks:
   arch-network:

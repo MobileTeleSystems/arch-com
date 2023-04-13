@@ -1,6 +1,8 @@
 from fastapi import Depends, FastAPI, HTTPException, Request
 import requests
 
+requests.adapters.DEFAULT_RETRIES = 5
+
 class Author(object):
     '''Class Author'''
     id : int
@@ -16,16 +18,19 @@ class Author(object):
       self.email = email
       self.title = title
       self.birth_date = birth_date
+    pass
 pass
 
 class Presentation_With_Author(object):
     '''Class Presentation_With_Author'''    
     title = str
-    author = Author
+    email = str
+    birth_date : str
     date = str
-    def __init__(self, title, author, date):        
+    def __init__(self, title, email, birth_date, date):        
         self.title = title
-        self.author = author
+        self.email = email
+        self.birth_date = birth_date
         self.date = date
     pass
 pass
@@ -48,25 +53,31 @@ app = FastAPI()
 @app.get("/presentationsAndAuthor/{title}")
 async def read_presentation(title: str):
     #get presentation
-    responsePresentation = requests.get("/presentations/"+"First Presentation")
+    responsePresentation = requests.get("http://service_presentation:8082/presentations/"+title)
     print(responsePresentation)
-    if responsePresentation is None : raise HTTPException(status_code=404, detail="No presentations for this id")
+    if responsePresentation is None : raise HTTPException(status_code=404, detail="No presentations for this title")
     
     #responsePresentation -> presentation
     presentation = Presentation(**responsePresentation.json()[0])
     print(presentation)
+    responsePresentation.close
     
+
+
+
     #get Author by id 
-    responseAuthor = requests.get("/authors/"+str(presentation.author_id))
+    responseAuthor = requests.get("http://service_author:8081/authors/"+str(presentation.author_id))
     print(responseAuthor)
-    if responseAuthor is None : raise HTTPException(status_code=404, detail="No presentations for this id")
+    if responseAuthor is None : raise HTTPException(status_code=404, detail="No authors for this id")
 
     #responseAuthor -> author
     author = Author(**responseAuthor.json()[0])
 
     #new integation class
-    presentationWithAuthor = Presentation_With_Author(presentation.title, author, presentation.date)
-
+    presentationWithAuthor = Presentation_With_Author(presentation.title, author.email, author.birth_date, presentation.date)
+    
+    responseAuthor.close
+    
     return presentationWithAuthor
 pass
 

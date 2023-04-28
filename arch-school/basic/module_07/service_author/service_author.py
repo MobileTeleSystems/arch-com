@@ -61,11 +61,9 @@ async def create_author(author: AuthorModel = Body(...)):
     return JSONResponse(status_code=status.HTTP_201_CREATED, content=created_author)
 
 
-
 @app.get("/authors/{author_id}")
 async def read_author(author_id: str):
     author = await db["authors"].find_one({"_id": author_id})
     if author is None:
         raise HTTPException(status_code=404, detail="Author not found")
     return JSONResponse(status_code=status.HTTP_200_OK, content=author)
-

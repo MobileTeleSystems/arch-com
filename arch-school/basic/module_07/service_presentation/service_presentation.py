@@ -47,11 +47,15 @@ class PresentationModel(BaseModel):
 
 
 @app.get("/presentations/{author_id}")
-async def read_author(author_id: int):
-    presentation = await db["presentationss"].find_all({"author_id": author_id})
-    if presentation is None:
+async def read_presentation(author_id: str):
+    cursor = db["presentations"].find({"author_id": author_id})
+    if cursor is None:
         raise HTTPException(status_code=404, detail="Presentations not found")
-    return JSONResponse(status_code=status.HTTP_200_OK, content=presentation)
+    all_presentations = []
+    async for presentation in cursor:
+        all_presentations.append(presentation)
+
+    return JSONResponse(status_code=status.HTTP_200_OK, content=list(all_presentations))
 
 
 @app.post("/presentations", response_description="Add new presentation", response_model=PresentationModel)
@@ -60,10 +64,3 @@ async def create_presentation(presentation_body: PresentationModel = Body(...)):
     created_presentation = await db["presentations"].find_one({"_id": new_presentation.inserted_id})
     return JSONResponse(status_code=status.HTTP_201_CREATED, content=created_presentation)
 
-
-@app.get("/presentations/{presentations_id}")
-async def read_presentation(presentations_id: str):
-    presentation = await db["presentationss"].find_one({"_id": presentations_id})
-    if presentation is None:
-        raise HTTPException(status_code=404, detail="Presentations not found")
-    return JSONResponse(status_code=status.HTTP_200_OK, content=presentation)

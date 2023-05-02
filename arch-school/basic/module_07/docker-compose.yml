@@ -1,0 +1,73 @@
+version: '3.3'
+
+services:
+  mongo:
+    image: mongo
+    container_name: db-node-ex01
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+    networks:
+      - arch-network
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo-data:/data/db
+
+  service_author:
+    build:
+      context: service_author
+      dockerfile: Dockerfile
+    container_name: service_author
+    networks:
+      - arch-network
+    depends_on:
+      - mongo
+      - cache
+    ports:
+      - 8081:8080
+
+  service_author_cache:
+    build:
+      context: service_author_cache
+      dockerfile: Dockerfile
+    container_name: service_author_cache
+    networks:
+      - arch-network
+    depends_on:
+      - mongo
+      - cache
+    ports:
+      - 8082:8080
+
+  service_presentation:
+    build:
+      context: service_presentation
+      dockerfile: Dockerfile
+    container_name: service_presentation
+    networks:
+      - arch-network
+    depends_on:
+      - mongo
+      - cache
+    ports:
+      - 8083:8080
+
+  cache:
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning 
+    networks:
+      - arch-network
+    volumes: 
+      - cache:/data
+volumes:
+  mongo-data:
+  cache:
+networks:
+  arch-network:
+    driver: "bridge"
+    external: false

@@ -1,0 +1,94 @@
+openapi: '3.0.0'
+info:
+  version: '1.0.0'
+  title: 'Conference server API'
+  description: API to retrive information about main entities of Conference server
+servers:
+  - url: http://localhost:8083
+
+paths:
+  /presentations/{author_id}:
+    get:
+      summary: Read presentations for author
+      parameters:
+      - name: author_id
+        description: The unique identifier of the author
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Author_id'
+      responses:
+        200:
+          description: Conference author
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Presentation'
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /presentations: 
+    post:
+      summary: Create new presentation
+      requestBody:
+        description: Presentation date and title
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Presentation'
+      responses:
+        200:
+          description: Presentation added succefully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Presentation'
+        404:
+          description: Can't add presentation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Author_id:
+      description: The unique identifier of author
+      type: string
+
+    Presentation:
+      type: object
+
+      properties:
+        id:
+          type: integer
+        author_id:
+          $ref: '#/components/schemas/Author_id'
+        date:
+          type: string
+        title:
+          type: string
+
+    Error:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          description: A human readable error message
+          type: string

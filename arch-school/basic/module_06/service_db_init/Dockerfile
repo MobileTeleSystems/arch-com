@@ -7,8 +7,9 @@ RUN apt-get clean && apt-get update --fix-missing && \
 
 COPY requirements.txt /
 RUN pip3 install -r requirements.txt
-COPY service_author_cache.py        /
+COPY service_db_init.py      /
+COPY ExportJson.json        /
 
 
-ENTRYPOINT ["python3", "-m", "uvicorn" , "service_author_cache:app","--host","0.0.0.0","--reload", "--port", "8080"] 
+ENTRYPOINT ["python3", "service_db_init.py"] 
 

@@ -5,9 +5,16 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import Session
 import json
+import os
 
 # Start SQL Alchemy
-engine = create_engine("mysql+pymysql://arch_user:arch_password@db-node-ex01:3306/archdb", echo = False)
+DB_HOST = os.getenv('DB_HOST')
+DB_PORT = os.getenv('DB_PORT')
+DB_USER = os.getenv('DB_USER')
+DB_SCHEME = os.getenv('DB_SCHEME')
+DB_PASSWORD = os.getenv('DB_PASSWORD')
+
+engine = create_engine("mysql+pymysql://"+DB_USER+":"+DB_PASSWORD+"@"+DB_HOST+":"+DB_PORT+"/"+DB_SCHEME, echo = True)
 conn = engine.connect() 
 
 Base = declarative_base()

@@ -20,19 +20,49 @@ services:
       - arch-network
     ports:
       - 3360:3306
+    healthcheck:
+      test: "/usr/bin/mysql --user=arch_user --password=arch_password --execute \"SHOW DATABASES;\""
+      timeout: 20s
+      retries: 5
     volumes:
       - db-node-ex01-data:/var/lib/mysql
+  
+  service_db_init:
+    build:
+      context: service_db_init
+      dockerfile: Dockerfile
+    container_name: service_db_init
+    environment:
+      - DB_HOST=db-node-ex01
+      - DB_PORT=3306
+      - DB_USER=arch_user
+      - DB_SCHEME=archdb
+      - DB_PASSWORD=arch_password
+    networks:
+      - arch-network
+    depends_on:
+      db-node-ex01:
+        condition: service_healthy
 
   service_author:
     build:
       context: service_author
       dockerfile: Dockerfile
     container_name: service_author
+    restart: on-failure
+    environment:
+      - DB_HOST=db-node-ex01
+      - DB_PORT=3306
+      - DB_USER=arch_user
+      - DB_SCHEME=archdb
+      - DB_PASSWORD=arch_password
     networks:
       - arch-network
     depends_on:
-      - db-node-ex01
-      - cache
+      db-node-ex01:
+        condition: service_healthy
+      service_db_init:
+        condition: service_started
     ports:
       - 8081:8080
 
@@ -41,11 +71,20 @@ services:
       context: service_author_cache
       dockerfile: Dockerfile
     container_name: service_author_cache
+    restart: on-failure
+    environment:
+      - DB_HOST=db-node-ex01
+      - DB_PORT=3306
+      - DB_USER=arch_user
+      - DB_SCHEME=archdb
+      - DB_PASSWORD=arch_password
     networks:
       - arch-network
     depends_on:
-      - db-node-ex01
-      - cache
+      db-node-ex01:
+        condition: service_healthy
+      service_db_init:
+        condition: service_started
     ports:
       - 8082:8080
 
@@ -54,14 +93,22 @@ services:
       context: service_presentation
       dockerfile: Dockerfile
     container_name: service_presentation
+    restart: on-failure
+    environment:
+      - DB_HOST=db-node-ex01
+      - DB_PORT=3306
+      - DB_USER=arch_user
+      - DB_SCHEME=archdb
+      - DB_PASSWORD=arch_password
     networks:
       - arch-network
     depends_on:
-      - db-node-ex01
-      - cache
+      db-node-ex01:
+        condition: service_healthy
+      service_db_init:
+        condition: service_started
     ports:
       - 8083:8080
-
   cache:
     image: redis:6.2-alpine
     restart: always
@@ -72,6 +119,7 @@ services:
       - arch-network
     volumes: 
       - cache:/data
+  
 volumes:
   db-node-ex01-data:
   cache:

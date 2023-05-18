@@ -1,0 +1,88 @@
+openapi: '3.0.0'
+info:
+  version: '1.0.0'
+  title: 'Conference server API'
+  description: API to retrive information about main entities of Conference server
+servers:
+  - url: http://localhost:8083
+
+paths:
+  /presentationsAndAuthor/{title}:
+    get:
+      summary: Read presentations by title
+      parameters:
+      - name: title
+        description: Presentation title
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/title'
+      responses:
+        200:
+          description: Presentation with Author by title
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Presentation'
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'       
+components:
+  schemas:
+    Author_id:
+      description: The unique identifier of author
+      type: string
+
+    Presentation:
+      type: object
+      properties:       
+        author_id:
+          $ref: '#/components/schemas/Author_id'
+        date:
+          type: string
+        title:
+          type: string
+    
+    Author:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/Author_id'
+        birth_date:
+          type: string
+        title:
+          type: string
+        email:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+    
+    Presentation_With_Author:
+      type: object
+      properties:       
+        author:
+          $ref: '#/components/schemas/Author'
+        date:
+          type: string
+        title:
+          type: string
+
+    Error:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          description: A human readable error message
+          type: string

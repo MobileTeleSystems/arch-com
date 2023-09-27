@@ -18,8 +18,9 @@
 - Клиент [Git](https://git-scm.com/) для доступа к Github
 - Текстовый редактор (рекомендуется [Visual Studio Code](https://code.visualstudio.com/)).
 - Плагины к Visual Studio Code:
-  - [vscode-plantuml](https://github.com/qjebbs/vscode-plantuml) - поддержка PlantUML
+  - [vscode-plantuml](https://marketplace.visualstudio.com/items?itemName=jebbs.plantuml) - поддержка PlantUML
   - [Markdown All in One](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one) – расширенная поддержка Markdown
+  - [Draw.io](https://marketplace.visualstudio.com/items?itemName=hediet.vscode-drawio) - поддержка диаграмм в формате Draw.io 
 - Markdown ([Github-диалект Markdown](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax))
 - [PlantUML](https://plantuml.com/en/):
   - Расширение для С4 диаграмм: https://github.com/plantuml-stdlib/C4-PlantUML

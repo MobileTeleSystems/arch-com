@@ -48,6 +48,6 @@ explain extended select * from Author where first_name like 'Jo%';
 -- );
 
 explain partitions select * from Author where first_name like 'Jo%';
-explain partitions select * from Author where birth_year<2011;
+explain partitions select * from Author where birth_year>=2011 and birth_year<2020;
 --ALTER TABLE Author TRUNCATE PARTITION p0,p1,p2,p3,p4;
 --ALTER TABLE log DROP PARTITION p0;
